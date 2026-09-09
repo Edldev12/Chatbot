@@ -1,12 +1,9 @@
+import { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import userImage from "../assets/user.avif";
 import robotImage from "../assets/robot.jpg";
-function ChatMessage(props) {
-  //function ChatMessage(message, sender) more short cut way to write the function but we are using props object to pass the message and sender properties. This allows us to pass any number of properties to the component without having to change the function signature.
-  //const message = props.message;
-  //const sender = props.sender;
-  const { message, sender } = props;
-  //destructuing the props object to extract the messange and sender properties. This allows us to use messange and sender directly instead of accessing them through props.message and props.sender.
+
+function ChatMessage({ message, sender }) {
   return (
     <div className={`chat-message ${sender}`}>
       {sender === "robot" && (
@@ -25,6 +22,14 @@ function ChatMessage(props) {
 }
 
 function ChatMessages({ chatMessages, isLoading }) {
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [chatMessages, isLoading]);
+
   return (
     <div className="chat-messages">
       {chatMessages.map((chatMessage, index) => {
@@ -36,6 +41,7 @@ function ChatMessages({ chatMessages, isLoading }) {
           />
         );
       })}
+
       {isLoading && (
         <div className="chat-message robot">
           <img src={robotImage} alt="robot" width="50" height="50" />
@@ -47,6 +53,8 @@ function ChatMessages({ chatMessages, isLoading }) {
           </div>
         </div>
       )}
+
+      <div ref={messagesEndRef}></div>
     </div>
   );
 }
