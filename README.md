@@ -101,33 +101,28 @@ The application uses:
 ```text
 AI-Chatbot/
 │
-├── frontend/
-│   ├── src/
-│   │   ├── assets/
-│   │   │   ├── robot.jpg
-│   │   │   └── user.avif
-│   │   │
-│   │   ├── component/
-│   │   │   ├── ChatInput.jsx
-│   │   │   └── ChatMessage.jsx
-│   │   │
-│   │   ├── App.jsx
-│   │   ├── App.css
-│   │   └── main.jsx
+├── src/
+│   ├── assets/
+│   │   ├── robot.jpg
+│   │   └── user.avif
 │   │
-│   ├── package.json
-│   └── vite.config.js
+│   ├── component/
+│   │   ├── ChatInput.jsx
+│   │   └── ChatMessage.jsx
+│   │
+│   ├── App.jsx
+│   ├── App.css
+└── main.jsx
 │
-├── backend/
+├── package.json
+└── vite.config.js
+│
+├── server/
 │   ├── server.js
 │   └── package.json
 │
 └── README.md
 ```
-
-> Your actual folder names may be slightly different depending on how you organized the project.
-
----
 
 # 🚀 Getting Started
 
