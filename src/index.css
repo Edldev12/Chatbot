@@ -1,6 +1,6 @@
-/* =========================
-   RESET
-========================= */
+/* =========================================================
+   GLOBAL
+========================================================= */
 
 * {
   box-sizing: border-box;
@@ -9,70 +9,48 @@
 html,
 body,
 #root {
+  width: 100%;
+  height: 100%;
   margin: 0;
-  min-height: 100%;
 }
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #121415;
-  color: #f5f5f5;
+  background-color: #101213;
+  color: #f1f1f1;
 }
 
 
-/* =========================
-   APP
-========================= */
-
-#root {
-  min-height: 100vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  padding: 20px;
-}
+/* =========================================================
+   APP CONTAINER
+========================================================= */
 
 .app-container {
   width: 100%;
-  max-width: 900px;
-  height: 90vh;
-
+  height: 100vh;
   display: flex;
   flex-direction: column;
-
-  background-color: #181b1c;
-
-  border: 1px solid #292d2e;
-  border-radius: 18px;
-
+  background-color: #101213;
   overflow: hidden;
-
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
 }
 
 
-/* =========================
-   CHAT MESSAGES AREA
-========================= */
+/* =========================================================
+   CHAT MESSAGES
+========================================================= */
 
 .chat-messages {
   flex: 1;
-
   padding: 25px;
-
   overflow-y: auto;
   overflow-x: hidden;
-
   scroll-behavior: smooth;
+  scrollbar-width: thin;
 }
 
-
-/* Scrollbar */
-
+/* Chrome, Edge and Safari */
 .chat-messages::-webkit-scrollbar {
-  width: 8px;
+  width: 7px;
 }
 
 .chat-messages::-webkit-scrollbar-track {
@@ -80,50 +58,39 @@ body {
 }
 
 .chat-messages::-webkit-scrollbar-thumb {
-  background: #343839;
+  background: #3a3d3e;
   border-radius: 10px;
 }
 
 .chat-messages::-webkit-scrollbar-thumb:hover {
-  background: #454a4b;
+  background: #555;
 }
 
 
-/* =========================
-   MESSAGE ROW
-========================= */
+/* =========================================================
+   CHAT MESSAGE
+========================================================= */
 
 .chat-message {
   width: 100%;
-
   display: flex;
   align-items: flex-end;
-
   gap: 12px;
-
   margin-bottom: 20px;
 }
-
-
-/* =========================
-   AVATAR
-========================= */
 
 .chat-message img {
   width: 50px;
   height: 50px;
-
   flex-shrink: 0;
-
   border-radius: 50%;
-
   object-fit: cover;
 }
 
 
-/* =========================
+/* =========================================================
    ROBOT MESSAGE
-========================= */
+========================================================= */
 
 .chat-message.robot {
   justify-content: flex-start;
@@ -132,15 +99,14 @@ body {
 .chat-message.robot .markdown-content {
   background-color: #222526;
   color: #f1f1f1;
-
   border-radius: 16px;
   border-bottom-left-radius: 5px;
 }
 
 
-/* =========================
+/* =========================================================
    USER MESSAGE
-========================= */
+========================================================= */
 
 .chat-message.user {
   justify-content: flex-end;
@@ -149,34 +115,31 @@ body {
 .chat-message.user .markdown-content {
   background-color: rgb(25, 135, 84);
   color: white;
-
   border-radius: 16px;
   border-bottom-right-radius: 5px;
 }
 
 
-/* =========================
-   MARKDOWN MESSAGE BUBBLE
-========================= */
+/* =========================================================
+   MESSAGE BUBBLE
+========================================================= */
 
 .markdown-content {
   max-width: 75%;
-
   padding: 14px 18px;
-
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.6;
-
   overflow-wrap: anywhere;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 
-/* =========================
-   MARKDOWN PARAGRAPHS
-========================= */
+/* =========================================================
+   MARKDOWN
+========================================================= */
 
 .markdown-content p {
-  margin: 0 0 12px;
+  margin: 0 0 10px;
 }
 
 .markdown-content p:last-child {
@@ -184,50 +147,35 @@ body {
 }
 
 
-/* =========================
-   MARKDOWN HEADINGS
-========================= */
+/* Headings */
 
 .markdown-content h1,
 .markdown-content h2,
 .markdown-content h3,
-.markdown-content h4,
-.markdown-content h5,
-.markdown-content h6 {
-  margin-top: 0;
-  margin-bottom: 12px;
-
+.markdown-content h4 {
+  margin-top: 15px;
+  margin-bottom: 10px;
   line-height: 1.3;
 }
 
 .markdown-content h1 {
-  font-size: 26px;
+  font-size: 25px;
 }
 
 .markdown-content h2 {
-  font-size: 23px;
+  font-size: 22px;
 }
 
 .markdown-content h3 {
-  font-size: 20px;
+  font-size: 19px;
 }
 
 .markdown-content h4 {
-  font-size: 18px;
-}
-
-.markdown-content h5 {
   font-size: 17px;
 }
 
-.markdown-content h6 {
-  font-size: 16px;
-}
 
-
-/* =========================
-   MARKDOWN BOLD / ITALIC
-========================= */
+/* Bold and italic */
 
 .markdown-content strong {
   font-weight: 700;
@@ -238,235 +186,125 @@ body {
 }
 
 
-/* =========================
-   MARKDOWN LISTS
-========================= */
+/* =========================================================
+   LISTS
+========================================================= */
 
 .markdown-content ul,
 .markdown-content ol {
-  margin-top: 8px;
-  margin-bottom: 12px;
-
+  margin: 10px 0;
   padding-left: 25px;
 }
 
 .markdown-content li {
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
 
 
-/* =========================
-   MARKDOWN LINKS
-========================= */
+/* =========================================================
+   LINKS
+========================================================= */
 
 .markdown-content a {
-  color: #66b3ff;
-
+  color: #72b7ff;
   text-decoration: underline;
-
-  word-break: break-word;
 }
 
 .markdown-content a:hover {
-  color: #9cccff;
+  opacity: 0.8;
 }
 
 
-/* =========================
+/* =========================================================
    INLINE CODE
-========================= */
+========================================================= */
 
 .markdown-content code {
-  padding: 3px 6px;
-
-  background-color: #111415;
-
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
   border-radius: 5px;
-
-  font-family: Consolas, monospace;
+  font-family: Consolas, Monaco, monospace;
   font-size: 14px;
 }
 
 
-/* =========================
+/* =========================================================
    CODE BLOCK
-========================= */
+========================================================= */
 
 .markdown-content pre {
-  margin: 14px 0 0;
-
-  padding: 15px;
-
+  margin: 12px 0;
+  padding: 14px;
   background-color: #111415;
-
-  border: 1px solid #303536;
-  border-radius: 10px;
-
+  border-radius: 8px;
   overflow-x: auto;
 }
 
 .markdown-content pre code {
-  padding: 0;
-
   background: transparent;
-
-  color: #e8e8e8;
-
+  padding: 0;
   font-size: 14px;
   line-height: 1.5;
 }
 
 
-/* =========================
+/* =========================================================
    BLOCKQUOTE
-========================= */
+========================================================= */
 
 .markdown-content blockquote {
   margin: 12px 0;
-
   padding: 8px 15px;
-
-  border-left: 4px solid rgb(25, 135, 84);
-
-  background-color: rgba(255, 255, 255, 0.04);
-
-  color: #cccccc;
+  border-left: 4px solid #777;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ccc;
 }
 
 
-/* =========================
+/* =========================================================
    HORIZONTAL LINE
-========================= */
+========================================================= */
 
 .markdown-content hr {
-  margin: 18px 0;
-
   border: none;
-  border-top: 1px solid #3a3d3e;
+  border-top: 1px solid #444;
+  margin: 15px 0;
 }
 
 
-/* =========================
+/* =========================================================
    TABLE
-========================= */
+========================================================= */
 
 .markdown-content table {
   width: 100%;
-
-  margin: 15px 0;
-
   border-collapse: collapse;
-
-  font-size: 15px;
+  margin: 12px 0;
+  display: block;
+  overflow-x: auto;
 }
 
 .markdown-content th,
 .markdown-content td {
+  border: 1px solid #444;
   padding: 8px 10px;
-
-  border: 1px solid #3a3d3e;
-
   text-align: left;
 }
 
 .markdown-content th {
-  background-color: #111415;
+  background-color: #303334;
 }
 
 
-/* =========================
-   INPUT AREA
-========================= */
-
-.chat-input-container {
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-
-  padding: 15px;
-
-  background-color: #181b1c;
-
-  border-top: 1px solid #2d3031;
-}
-
-
-/* =========================
-   INPUT
-========================= */
-
-.chat-input {
-  flex: 1;
-
-  min-width: 0;
-
-  padding: 13px 16px;
-
-  border: 1px solid #3a3d3e;
-  border-radius: 10px;
-
-  background-color: #222526;
-  color: white;
-
-  font-size: 16px;
-
-  outline: none;
-}
-
-.chat-input::placeholder {
-  color: #999;
-}
-
-.chat-input:focus {
-  border-color: rgb(25, 135, 84);
-
-  box-shadow: 0 0 0 2px rgba(25, 135, 84, 0.15);
-}
-
-
-/* =========================
-   SEND BUTTON
-========================= */
-
-.chat-input-container button {
-  flex-shrink: 0;
-
-  padding: 13px 22px;
-
-  border: none;
-  border-radius: 10px;
-
-  background-color: rgb(25, 135, 84);
-  color: white;
-
-  font-size: 16px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease;
-}
-
-.chat-input-container button:hover {
-  background-color: rgb(20, 110, 70);
-}
-
-.chat-input-container button:active {
-  transform: scale(0.96);
-}
-
-.chat-input-container button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+/* =========================================================
+   LOADING SKELETON
+========================================================= */
 
 .typing-skeleton {
   display: flex;
   align-items: center;
   gap: 5px;
+  min-width: 55px;
 }
 
 .typing-skeleton span {
@@ -504,30 +342,110 @@ body {
   }
 }
 
-/* =========================
-   MOBILE
-========================= */
+
+/* =========================================================
+   INPUT CONTAINER
+========================================================= */
+
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  background-color: #181b1c;
+  border-top: 1px solid #2d3031;
+}
+
+
+/* =========================================================
+   TEXTAREA
+========================================================= */
+
+.chat-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  max-height: 150px;
+  padding: 13px 16px;
+
+  border: 1px solid #3a3d3e;
+  border-radius: 10px;
+
+  background-color: #222526;
+  color: white;
+
+  font-size: 16px;
+  font-family: inherit;
+
+  outline: none;
+  resize: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.chat-input::placeholder {
+  color: #888;
+}
+
+.chat-input:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 2px rgba(25, 135, 84, 0.15);
+}
+
+
+/* =========================================================
+   SEND BUTTON
+========================================================= */
+
+.chat-input-container button {
+  flex-shrink: 0;
+
+  padding: 13px 20px;
+
+  border: none;
+  border-radius: 10px;
+
+  background-color: rgb(25, 135, 84);
+  color: white;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease,
+    opacity 0.2s ease;
+}
+
+.chat-input-container button:hover:not(:disabled) {
+  background-color: rgb(20, 115, 72);
+}
+
+.chat-input-container button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.chat-input-container button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   MOBILE RESPONSIVE
+========================================================= */
 
 @media (max-width: 600px) {
-  #root {
-    padding: 0;
-  }
-
-  .app-container {
-    width: 100%;
-    height: 100vh;
-
-    border: none;
-    border-radius: 0;
-  }
-
   .chat-messages {
-    padding: 15px;
+    padding: 15px 10px;
   }
 
   .chat-message {
     gap: 8px;
-
     margin-bottom: 15px;
   }
 
@@ -537,34 +455,66 @@ body {
   }
 
   .markdown-content {
-    max-width: 82%;
-
+    max-width: 85%;
     padding: 11px 14px;
-
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .markdown-content h1 {
-    font-size: 22px;
+    font-size: 21px;
   }
 
   .markdown-content h2 {
-    font-size: 20px;
+    font-size: 19px;
   }
 
   .markdown-content h3 {
-    font-size: 18px;
+    font-size: 17px;
+  }
+
+  .markdown-content pre {
+    padding: 10px;
+  }
+
+  .markdown-content pre code {
+    font-size: 13px;
   }
 
   .chat-input-container {
     padding: 10px;
+    gap: 7px;
   }
 
   .chat-input {
+    min-height: 44px;
+    padding: 11px 12px;
     font-size: 15px;
   }
 
   .chat-input-container button {
-    padding: 12px 16px;
+    padding: 11px 15px;
+    font-size: 15px;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL SCREENS
+========================================================= */
+
+@media (max-width: 400px) {
+  .chat-message img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .markdown-content {
+    max-width: 88%;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .chat-input-container button {
+    padding: 10px 12px;
   }
 }
