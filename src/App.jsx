@@ -33,12 +33,16 @@ function App() {
       sender: "robot",
     },
   ]);
-
+  const [isLoading, setIsLoading] = useState(false);
   return (
     <div className="app-container">
-      <ChatMessages chatMessages={chatMessages} />
+      <ChatMessages chatMessages={chatMessages} isLoading={isLoading} />
 
-      <ChatInput setChatMessages={setChatMessages} />
+      <ChatInput
+        setChatMessages={setChatMessages}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+      />
     </div>
   );
 }

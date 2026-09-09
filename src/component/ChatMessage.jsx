@@ -24,8 +24,7 @@ function ChatMessage(props) {
   );
 }
 
-function ChatMessages(props) {
-  const { chatMessages } = props;
+function ChatMessages({ chatMessages, isLoading }) {
   return (
     <div className="chat-messages">
       {chatMessages.map((chatMessage, index) => {
@@ -37,6 +36,17 @@ function ChatMessages(props) {
           />
         );
       })}
+      {isLoading && (
+        <div className="chat-message robot">
+          <img src={robotImage} alt="robot" width="50" height="50" />
+
+          <div className="markdown-content typing-skeleton">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

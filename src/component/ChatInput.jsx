@@ -1,14 +1,13 @@
 import { useState } from "react";
 
-function ChatInput({ setChatMessages }) {
+function ChatInput({ setChatMessages, isLoading, setIsLoading }) {
   const [inputText, setInputText] = useState("");
-
   function saveInputText(event) {
     setInputText(event.target.value);
   }
 
   async function sendMessages() {
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || isLoading) return;
 
     const userMessage = inputText;
 
@@ -21,7 +20,7 @@ function ChatInput({ setChatMessages }) {
     ]);
 
     setInputText("");
-
+    setIsLoading(true);
     try {
       const response = await fetch("http://localhost:3000/chat", {
         method: "POST",
@@ -52,8 +51,11 @@ function ChatInput({ setChatMessages }) {
           sender: "robot",
         },
       ]);
+    } finally {
+      setIsLoading(false);
     }
   }
+
 
   return (
     <div className="chat-input-container">
@@ -61,7 +63,7 @@ function ChatInput({ setChatMessages }) {
         className="chat-input"
         placeholder="Ask me anything..."
         value={inputText}
-        onChange={(event) => setInputText(event.target.value)}
+        onChange={saveInputText}
         onKeyDown={(event) => {
           if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
@@ -70,7 +72,8 @@ function ChatInput({ setChatMessages }) {
         }}
       />
 
-      <button onClick={sendMessages}>Send</button>
+      <button onClick={sendMessages} disabled={isLoading}>
+        {isLoading ? "Sending..." : "Send"}</button>
     </div>
   );
 }
