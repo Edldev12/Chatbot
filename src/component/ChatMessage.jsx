@@ -1,3 +1,4 @@
+import ReactMarkdown from "react-markdown";
 import userImage from "../assets/user.avif";
 import robotImage from "../assets/robot.jpg";
 function ChatMessage(props) {
@@ -7,12 +8,14 @@ function ChatMessage(props) {
   const { message, sender } = props;
   //destructuing the props object to extract the messange and sender properties. This allows us to use messange and sender directly instead of accessing them through props.message and props.sender.
   return (
-    <div className="chat-message">
+    <div className={`chat-message ${sender}`}>
       {sender === "robot" && (
         <img src={robotImage} alt="robot" width="50" height="50" />
       )}
 
-      {message}
+      <div className="markdown-content">
+        <ReactMarkdown>{message}</ReactMarkdown>
+      </div>
 
       {sender === "user" && (
         <img src={userImage} alt="user" width="50" height="50" />
@@ -23,9 +26,8 @@ function ChatMessage(props) {
 
 function ChatMessages(props) {
   const { chatMessages } = props;
-
   return (
-    <>
+    <div className="chat-messages">
       {chatMessages.map((chatMessage, index) => {
         return (
           <ChatMessage
@@ -35,7 +37,7 @@ function ChatMessages(props) {
           />
         );
       })}
-    </>
+    </div>
   );
 }
 

@@ -58,9 +58,9 @@ function ChatInput({ setChatMessages }) {
   return (
     <div className="chat-input-container">
       <input
+        className="chat-input"
         type="text"
         placeholder="Type your message ..."
-        size="30"
         value={inputText}
         onChange={saveInputText}
       />
