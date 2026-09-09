@@ -6,17 +6,37 @@ function ChatMessage(props) {
   //const sender = props.sender;
   const { message, sender } = props;
   //destructuing the props object to extract the messange and sender properties. This allows us to use messange and sender directly instead of accessing them through props.message and props.sender.
-
   return (
     <div className="chat-message">
       {sender === "robot" && (
         <img src={robotImage} alt="robot" width="50" height="50" />
       )}
+
       {message}
+
       {sender === "user" && (
         <img src={userImage} alt="user" width="50" height="50" />
       )}
     </div>
-  )
+  );
 }
-export default ChatMessage;
+
+function ChatMessages(props) {
+  const { chatMessages } = props;
+
+  return (
+    <>
+      {chatMessages.map((chatMessage, index) => {
+        return (
+          <ChatMessage
+            key={index}
+            message={chatMessage.message}
+            sender={chatMessage.sender}
+          />
+        );
+      })}
+    </>
+  );
+}
+
+export default ChatMessages;
