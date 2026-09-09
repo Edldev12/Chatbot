@@ -35,11 +35,11 @@ function App() {
   ]);
 
   return (
-    <>
+    <div className="app-container">
       <ChatMessages chatMessages={chatMessages} />
 
       <ChatInput setChatMessages={setChatMessages} />
-    </>
+    </div>
   );
 }
 

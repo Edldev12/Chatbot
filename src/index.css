@@ -1,0 +1,43 @@
+button {
+  background-color: rgb(25, 135, 84);
+  margin-left: 10px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  padding: 12px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-input-container input {
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  background-color: white;
+  flex-grow: 1;
+}
+
+.chat-input-container input:focus {
+  border-color: rgb(25, 135, 84);
+  box-shadow: 0 0 5px rgba(25, 135, 84, 0.5);
+}
+
+.app-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

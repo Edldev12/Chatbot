@@ -7,20 +7,56 @@ function ChatInput({ setChatMessages }) {
     setInputText(event.target.value);
   }
 
-  function sendMessages() {
+  async function sendMessages() {
+    if (!inputText.trim()) return;
+
+    const userMessage = inputText;
+
     setChatMessages((messages) => [
       ...messages,
       {
-        message: inputText,
+        message: userMessage,
         sender: "user",
       },
     ]);
 
     setInputText("");
+
+    try {
+      const response = await fetch("http://localhost:3000/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: userMessage,
+        }),
+      });
+
+      const data = await response.json();
+
+      setChatMessages((messages) => [
+        ...messages,
+        {
+          message: data.message,
+          sender: "robot",
+        },
+      ]);
+    } catch (error) {
+      console.error(error);
+
+      setChatMessages((messages) => [
+        ...messages,
+        {
+          message: "Sorry, I couldn't connect to the server.",
+          sender: "robot",
+        },
+      ]);
+    }
   }
 
   return (
-    <div className="chat-input">
+    <div className="chat-input-container">
       <input
         type="text"
         placeholder="Type your message ..."
