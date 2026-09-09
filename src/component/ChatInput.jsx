@@ -57,12 +57,17 @@ function ChatInput({ setChatMessages }) {
 
   return (
     <div className="chat-input-container">
-      <input
+      <textarea
         className="chat-input"
-        type="text"
-        placeholder="Type your message ..."
+        placeholder="Ask me anything..."
         value={inputText}
-        onChange={saveInputText}
+        onChange={(event) => setInputText(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            sendMessages();
+          }
+        }}
       />
 
       <button onClick={sendMessages}>Send</button>
