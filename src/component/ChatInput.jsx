@@ -1,6 +1,11 @@
 import { useState } from "react";
 
-function ChatInput({ setChatMessages, isLoading, setIsLoading }) {
+function ChatInput({
+  chatMessages,
+  setChatMessages,
+  isLoading,
+  setIsLoading,
+}) {
   const [inputText, setInputText] = useState("");
   function saveInputText(event) {
     setInputText(event.target.value);
@@ -21,6 +26,8 @@ function ChatInput({ setChatMessages, isLoading, setIsLoading }) {
 
     setInputText("");
     setIsLoading(true);
+    console.log("MESSAGE:", userMessage);
+    console.log("HISTORY:", chatMessages);
     try {
       const response = await fetch("http://localhost:3000/chat", {
         method: "POST",
@@ -29,6 +36,7 @@ function ChatInput({ setChatMessages, isLoading, setIsLoading }) {
         },
         body: JSON.stringify({
           message: userMessage,
+          history: chatMessages,
         }),
       });
       if (!response.ok) {

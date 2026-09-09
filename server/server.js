@@ -8,7 +8,20 @@ app.use(express.json());
 
 app.post("/chat", async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, history = [] } = req.body;
+
+    const messages = [
+      ...history.map((chat) => ({
+        role: chat.sender === "user" ? "user" : "assistant",
+        content: chat.message,
+      })),
+      {
+        role: "user",
+        content: message,
+      },
+    ];
+
+    console.log("OLLAMA MESSAGES:", messages);
 
     const response = await fetch("http://localhost:11434/api/chat", {
       method: "POST",
@@ -17,12 +30,7 @@ app.post("/chat", async (req, res) => {
       },
       body: JSON.stringify({
         model: "gemma3:1b",
-        messages: [
-          {
-            role: "user",
-            content: message,
-          },
-        ],
+        messages,
         stream: false,
       }),
     });

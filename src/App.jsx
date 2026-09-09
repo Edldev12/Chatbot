@@ -39,6 +39,7 @@ function App() {
       <ChatMessages chatMessages={chatMessages} isLoading={isLoading} />
 
       <ChatInput
+        chatMessages={chatMessages}
         setChatMessages={setChatMessages}
         isLoading={isLoading}
         setIsLoading={setIsLoading}
