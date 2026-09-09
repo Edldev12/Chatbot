@@ -142,12 +142,6 @@ cd AI-Chatbot
 
 # 🎨 Frontend Setup
 
-Move into the frontend directory:
-
-```bash
-cd frontend
-```
-
 Install dependencies:
 
 ```bash
@@ -175,7 +169,7 @@ Open another terminal.
 Move into the backend directory:
 
 ```bash
-cd backend
+cd src
 ```
 
 Install dependencies:
