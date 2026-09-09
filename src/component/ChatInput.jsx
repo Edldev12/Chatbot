@@ -31,7 +31,9 @@ function ChatInput({ setChatMessages, isLoading, setIsLoading }) {
           message: userMessage,
         }),
       });
-
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
       const data = await response.json();
 
       setChatMessages((messages) => [
@@ -47,7 +49,7 @@ function ChatInput({ setChatMessages, isLoading, setIsLoading }) {
       setChatMessages((messages) => [
         ...messages,
         {
-          message: "Sorry, I couldn't connect to the server.",
+          message: "Sorry, something went wrong. Please try again.",
           sender: "robot",
         },
       ]);
