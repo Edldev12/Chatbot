@@ -169,7 +169,7 @@ Open another terminal.
 Move into the backend directory:
 
 ```bash
-cd src
+cd server.js
 ```
 
 Install dependencies:
