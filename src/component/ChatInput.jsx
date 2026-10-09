@@ -30,16 +30,19 @@ function ChatInput({
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/chat", {
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           message: userMessage,
           history: updatedHistory,
         }),
       });
+
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.status} `);

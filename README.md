@@ -187,7 +187,7 @@ node server.js
 The backend will run at:
 
 ```text
-http://localhost:3000
+https://edlawit-chatbot-api.onrender.com/chat
 ```
 
 ---
@@ -237,7 +237,7 @@ User → "What is React?"
 ### 2. React sends a POST request
 
 ```text
-POST http://localhost:3000/chat
+POST https://edlawit-chatbot-api.onrender.com/chat
 ```
 
 The request contains:

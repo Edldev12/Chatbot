@@ -55,10 +55,12 @@ function App() {
   useEffect(() => {
     async function checkSession() {
       try {
+
         const response = await fetch(
-          "http://localhost:3000/auth/me",
+          "https://edlawit-chatbot-api.onrender.com/auth/me",
           { credentials: "include" }
         );
+
 
         if (response.ok) {
           const data = await response.json();
@@ -160,13 +162,15 @@ function App() {
 
   async function handleLogout() {
     try {
+
       const response = await fetch(
-        "http://localhost:3000/auth/logout",
+        `${import.meta.env.VITE_API_URL}/auth/logout`,
         {
           method: "POST",
           credentials: "include",
         }
       );
+
 
       if (!response.ok) {
         throw new Error("Logout failed. Please try again.");

@@ -20,17 +20,17 @@ function Auth({ onLogin }) {
         ? { email, password }
         : { name, email, password };
 
+
       const response = await fetch(
-        `http://localhost:3000/auth/${endpoint}`,
+        `${import.meta.env.VITE_API_URL}/auth/${endpoint}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify(body),
         }
       );
+
 
       const data = await response.json();
 
