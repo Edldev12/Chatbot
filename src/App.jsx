@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from "react";
 import ChatInput from "./component/ChatInput.jsx";
 import ChatMessages from "./component/ChatMessage.jsx";
+import Auth from "./component/Auth.jsx";
 import "./index.css";
 import "./App.css";
 
@@ -42,6 +42,9 @@ function loadChats() {
 }
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [checkingSession, setCheckingSession] = useState(true);
+
   const [chats, setChats] = useState(loadChats);
   const [activeChatId, setActiveChatId] = useState(
     () => chats[0]?.id
@@ -49,13 +52,34 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/auth/me",
+          { credentials: "include" }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user);
+        }
+      } catch (error) {
+        console.error("Could not check login session:", error);
+      } finally {
+        setCheckingSession(false);
+      }
+    }
+
+    checkSession();
+  }, []);
+
   const activeChat = chats.find(
     (chat) => chat.id === activeChatId
   );
 
   const chatMessages = activeChat?.messages ?? welcomeMessages;
 
-  // Save conversations whenever chat history changes.
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
@@ -64,13 +88,10 @@ function App() {
     }
   }, [chats]);
 
-  // Update the active conversation after a message is added.
   function setChatMessages(update) {
     setChats((previousChats) =>
       previousChats.map((chat) => {
-        if (chat.id !== activeChatId) {
-          return chat;
-        }
+        if (chat.id !== activeChatId) return chat;
 
         const messages =
           typeof update === "function"
@@ -137,10 +158,39 @@ function App() {
     }
   }
 
+  async function handleLogout() {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/auth/logout",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Logout failed. Please try again.");
+      }
+
+      setUser(null);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  if (checkingSession) {
+    return <div className="auth-page">Checking session...</div>;
+  }
+
+  if (!user) {
+    return <Auth onLogin={setUser} />;
+  }
+
   return (
     <div className="app-container">
       <aside
-        className={`chat-sidebar ${sidebarOpen ? "" : "sidebar-closed"}`}
+        className={`chat-sidebar ${sidebarOpen ? "" : "sidebar-closed"
+          } `}
       >
         <div className="sidebar-header">
           <h2>My AI Chats</h2>
@@ -169,7 +219,7 @@ function App() {
             <div
               key={chat.id}
               className={`history-item ${chat.id === activeChatId ? "active" : ""
-                }`}
+                } `}
             >
               <button
                 className="history-select"
@@ -189,7 +239,7 @@ function App() {
                   handleDeleteChat(event, chat.id)
                 }
                 disabled={isLoading}
-                aria-label={`Delete ${chat.title}`}
+                aria-label={`Delete ${chat.title} `}
                 title="Delete conversation"
               >
                 ×
@@ -199,7 +249,10 @@ function App() {
         </div>
 
         <div className="sidebar-footer">
-          Powered by Ollama · gemma3:1b
+          <p>{user.name}</p>
+          <p>{user.email}</p>
+          <button onClick={handleLogout}>Log out</button>
+          <p>Powered by Ollama · gemma3:1b</p>
         </div>
       </aside>
 

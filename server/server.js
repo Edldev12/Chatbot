@@ -1,10 +1,42 @@
+import "dotenv/config";
+import process from "node:process";
 import express from "express";
 import cors from "cors";
+import session from "express-session";
+import authRoutes from "./routes/auth.js";
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+if (!process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET is missing from server/.env");
+}
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
+
+app.use(
+  session({
+    name: "chatbot.sid",
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  })
+);
+
+app.use("/auth", authRoutes);
 
 app.post("/chat", async (req, res) => {
   try {
@@ -21,8 +53,6 @@ app.post("/chat", async (req, res) => {
       },
     ];
 
-    console.log("OLLAMA MESSAGES:", messages);
-
     const response = await fetch("http://localhost:11434/api/chat", {
       method: "POST",
       headers: {
@@ -36,7 +66,7 @@ app.post("/chat", async (req, res) => {
     });
 
     if (!response.ok) {
-      throw new Error(`Ollama error: ${response.status}`);
+      throw new Error(`Ollama error: ${response.status} `);
     }
 
     const data = await response.json();
@@ -53,6 +83,6 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

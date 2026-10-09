@@ -1,100 +1,118 @@
 import { useState } from "react";
 
-function Auth() {
-  const [isRegister, setIsRegister] = useState(false);
+function Auth({ onLogin }) {
+  const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  async function handleSubmit(e) {
+    e.preventDefault();
     setError("");
+    setLoading(true);
 
-    if (isRegister && !name.trim()) {
-      setError("Please enter your name.");
-      return;
+    try {
+      const endpoint = isLogin ? "login" : "register";
+
+      const body = isLogin
+        ? { email, password }
+        : { name, email, password };
+
+      const response = await fetch(
+        `http://localhost:3000/auth/${endpoint}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(body),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Authentication failed.");
+      }
+
+      if (isLogin) {
+        onLogin(data.user);
+      } else {
+        setIsLogin(true);
+        setName("");
+        setPassword("");
+        setError("Account created! Please log in.");
+      }
+    } catch (err) {
+      setError(err.message || "Unable to connect to the server.");
+    } finally {
+      setLoading(false);
     }
-
-    if (!email.trim() || !password) {
-      setError("Please enter your email and password.");
-      return;
-    }
-
-    // Temporary UI-only behavior.
-    // Real authentication will be connected in the next step.
-    setError("Authentication is not connected yet.");
   }
 
   return (
     <div className="auth-page">
       <form className="auth-card" onSubmit={handleSubmit}>
-        <h1>My AI Chatbot</h1>
-
-        <p className="auth-subtitle">
-          {isRegister
-            ? "Create your account"
-            : "Welcome back"}
+        <h1>{isLogin ? "Welcome Back" : "Create Account"}</h1>
+        <p>
+          {isLogin
+            ? "Log in to continue chatting."
+            : "Register to start chatting."}
         </p>
 
-        {isRegister && (
-          <label>
-            Full name
-            <input
-              type="text"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="Enter your name"
-              autoComplete="name"
-            />
-          </label>
+        {!isLogin && (
+          <input
+            type="text"
+            placeholder="Full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            minLength={2}
+            maxLength={80}
+            required
+          />
         )}
 
-        <label>
-          Email address
-          <input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="you@example.com"
-            autoComplete="email"
-            required
-          />
-        </label>
+        <input
+          type="email"
+          placeholder="Email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            placeholder="Enter your password"
-            autoComplete={
-              isRegister ? "new-password" : "current-password"
-            }
-            minLength={8}
-            required
-          />
-        </label>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          minLength={8}
+          maxLength={72}
+          required
+        />
 
-        {error && <p className="auth-error">{error}</p>}
+        {error && <p role="alert">{error}</p>}
 
-        <button className="auth-submit" type="submit">
-          {isRegister ? "Create Account" : "Log In"}
+        <button type="submit" disabled={loading}>
+          {loading
+            ? "Please wait..."
+            : isLogin
+              ? "Log In"
+              : "Create Account"}
         </button>
 
-        <p className="auth-switch">
-          {isRegister
-            ? "Already have an account?"
-            : "Don't have an account?"}{" "}
+        <p>
+          {isLogin ? "Don't have an account?" : "Already registered?"}{" "}
           <button
             type="button"
             onClick={() => {
-              setIsRegister(!isRegister);
+              setIsLogin(!isLogin);
               setError("");
             }}
           >
-            {isRegister ? "Log in" : "Register"}
+            {isLogin ? "Register" : "Log In"}
           </button>
         </p>
       </form>
