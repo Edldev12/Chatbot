@@ -7,27 +7,28 @@ function ChatInput({
   setIsLoading,
 }) {
   const [inputText, setInputText] = useState("");
+
   function saveInputText(event) {
     setInputText(event.target.value);
   }
 
   async function sendMessages() {
-    if (!inputText.trim() || isLoading) return;
+    const userMessage = inputText.trim();
 
-    const userMessage = inputText;
+    if (!userMessage || isLoading) return;
 
-    setChatMessages((messages) => [
-      ...messages,
+    const updatedHistory = [
+      ...chatMessages,
       {
         message: userMessage,
         sender: "user",
       },
-    ]);
+    ];
 
+    setChatMessages(updatedHistory);
     setInputText("");
     setIsLoading(true);
-    console.log("MESSAGE:", userMessage);
-    console.log("HISTORY:", chatMessages);
+
     try {
       const response = await fetch("http://localhost:3000/chat", {
         method: "POST",
@@ -36,12 +37,14 @@ function ChatInput({
         },
         body: JSON.stringify({
           message: userMessage,
-          history: chatMessages,
+          history: updatedHistory,
         }),
       });
+
       if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
+        throw new Error(`Server error: ${response.status} `);
       }
+
       const data = await response.json();
 
       setChatMessages((messages) => [
@@ -52,7 +55,7 @@ function ChatInput({
         },
       ]);
     } catch (error) {
-      console.error(error);
+      console.error("Chat error:", error);
 
       setChatMessages((messages) => [
         ...messages,
@@ -65,7 +68,6 @@ function ChatInput({
       setIsLoading(false);
     }
   }
-
 
   return (
     <div className="chat-input-container">
@@ -83,7 +85,8 @@ function ChatInput({
       />
 
       <button onClick={sendMessages} disabled={isLoading}>
-        {isLoading ? "Sending..." : "Send"}</button>
+        {isLoading ? "Sending..." : "Send"}
+      </button>
     </div>
   );
 }
