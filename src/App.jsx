@@ -57,7 +57,7 @@ function App() {
       try {
 
         const response = await fetch(
-          "https://edlawit-chatbot-api.onrender.com/auth/me",
+          `${import.meta.env.VITE_API_URL}/auth/me`,
           { credentials: "include" }
         );
 
