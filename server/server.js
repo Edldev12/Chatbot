@@ -1,3 +1,4 @@
+
 import "dotenv/config";
 import process from "node:process";
 import express from "express";
@@ -12,7 +13,6 @@ if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET is missing");
 }
 
-
 app.set("trust proxy", 1);
 
 app.use(
@@ -25,7 +25,7 @@ app.use(
   })
 );
 
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 
 app.use(
   session({
@@ -59,46 +59,74 @@ app.post("/chat", async (req, res) => {
       });
     }
 
-    const messages = [
-      ...history
+    if (!process.env.GROQ_API_KEY) {
+      return res.status(503).json({
+        message: "AI service is not configured yet.",
+      });
+    }
+
+    const safeHistory = Array.isArray(history)
+      ? history
         .filter(
           (chat) =>
-            ["user", "assistant"].includes(
-              chat.sender === "user" ? "user" : "assistant"
-            ) &&
+            chat &&
+            ["user", "assistant"].includes(chat.sender) &&
             typeof chat.message === "string"
         )
+        .slice(-10)
         .map((chat) => ({
-          role: chat.sender === "user" ? "user" : "assistant",
-          content: chat.message,
-        })),
+          role: chat.sender,
+          content: chat.message.slice(0, 4000),
+        }))
+      : [];
+
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
       {
-        role: "user",
-        content: message.trim(),
-      },
-    ];
-
-    const response = await fetch("http://localhost:11434/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gemma3:1b",
-        messages,
-        stream: false,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Ollama error: ${response.status}`);
-    }
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model:
+            process.env.GROQ_MODEL || "llama-3.3-70b-versatile",
+          messages: [
+            {
+              role: "system",
+              content: "You are a helpful, friendly AI assistant.",
+            },
+            ...safeHistory,
+            {
+              role: "user",
+              content: message.trim().slice(0, 4000),
+            },
+          ],
+          max_tokens: 1024,
+        }),
+      }
+    );
 
     const data = await response.json();
 
-    res.json({
-      message: data.message.content,
-    });
+    if (!response.ok) {
+      console.error("Groq API error:", response.status, data.error?.message);
+
+      return res.status(502).json({
+        message:
+          "The AI service could not respond. Please try again later.",
+      });
+    }
+
+    const answer = data.choices?.[0]?.message?.content;
+
+    if (!answer) {
+      return res.status(502).json({
+        message: "The AI returned an empty response.",
+      });
+    }
+
+    res.json({ message: answer });
   } catch (error) {
     console.error("AI ERROR:", error.message);
 
