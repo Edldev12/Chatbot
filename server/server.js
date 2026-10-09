@@ -9,12 +9,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 if (!process.env.SESSION_SECRET) {
-  throw new Error("SESSION_SECRET is missing from server/.env");
+  throw new Error("SESSION_SECRET is missing");
 }
+
+
+app.set("trust proxy", 1);
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      process.env.FRONTEND_URL,
+    ].filter(Boolean),
     credentials: true,
   })
 );
@@ -29,7 +35,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite:
+        process.env.NODE_ENV === "production" ? "none" : "lax",
       secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000,
     },
@@ -38,18 +45,36 @@ app.use(
 
 app.use("/auth", authRoutes);
 
+app.get("/", (req, res) => {
+  res.json({ message: "Chatbot API is running" });
+});
+
 app.post("/chat", async (req, res) => {
   try {
     const { message, history = [] } = req.body;
 
+    if (typeof message !== "string" || !message.trim()) {
+      return res.status(400).json({
+        message: "Please provide a message.",
+      });
+    }
+
     const messages = [
-      ...history.map((chat) => ({
-        role: chat.sender === "user" ? "user" : "assistant",
-        content: chat.message,
-      })),
+      ...history
+        .filter(
+          (chat) =>
+            ["user", "assistant"].includes(
+              chat.sender === "user" ? "user" : "assistant"
+            ) &&
+            typeof chat.message === "string"
+        )
+        .map((chat) => ({
+          role: chat.sender === "user" ? "user" : "assistant",
+          content: chat.message,
+        })),
       {
         role: "user",
-        content: message,
+        content: message.trim(),
       },
     ];
 
@@ -66,7 +91,7 @@ app.post("/chat", async (req, res) => {
     });
 
     if (!response.ok) {
-      throw new Error(`Ollama error: ${response.status} `);
+      throw new Error(`Ollama error: ${response.status}`);
     }
 
     const data = await response.json();
@@ -75,7 +100,7 @@ app.post("/chat", async (req, res) => {
       message: data.message.content,
     });
   } catch (error) {
-    console.error("OLLAMA ERROR:", error);
+    console.error("AI ERROR:", error.message);
 
     res.status(500).json({
       message: "Sorry, I couldn't get a response from the AI.",
@@ -83,6 +108,6 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server listening on port ${PORT}`);
 });
